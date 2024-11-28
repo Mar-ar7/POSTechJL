@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace POSTechJL
 {
     public partial class MainForm : Form
@@ -18,29 +17,29 @@ namespace POSTechJL
             InitializeComponent();
         }
 
-        private void btnProducts_Click(object sender, EventArgs e)
+        // Método para abrir el formulario de administración de datos (productos, empleados, clientes)
+        private void btnAdminData_Click(object sender, EventArgs e)
         {
-            ProductForm productForm = new ProductForm();
-            productForm.ShowDialog();
+            // Se abre el formulario para gestionar los datos de los productos, empleados y clientes
+            AdminDataForm adminForm = new AdminDataForm();
+            adminForm.ShowDialog();  // Muestra el formulario en modo modal
         }
 
-        private void btnClients_Click(object sender, EventArgs e)
+        // Método para abrir el formulario de ventas
+        private void btnSales_Click(object sender, EventArgs e)
         {
-            ClientForm clientForm = new ClientForm();
-            clientForm.ShowDialog();
+            // Se abre el formulario para realizar ventas
+            SalesForm salesForm = new SalesForm();
+            salesForm.Show();  // Muestra el formulario sin bloquear el formulario principal
         }
 
-        private void btnEmployees_Click(object sender, EventArgs e)
-        {
-            EmployeeForm employeeForm = new EmployeeForm();
-            employeeForm.ShowDialog();
-        }
-
+        // Método para cerrar sesión
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            this.Close(); // Cierra el formulario principal.
-            LoginForm loginForm = new LoginForm();
-            loginForm.Show(); // Regresa al login.
+            // Lógica de logout, cerrar sesión y volver al formulario de login
+            this.Close();  // Cierra el formulario principal.
+            LoginForm loginForm = new LoginForm();  // Crea una instancia del formulario de login
+            loginForm.Show();  // Muestra el formulario de login
         }
     }
 }

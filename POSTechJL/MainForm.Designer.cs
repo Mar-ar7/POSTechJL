@@ -15,62 +15,51 @@
 
         private void InitializeComponent()
         {
-            this.btnProducts = new System.Windows.Forms.Button();
-            this.btnClients = new System.Windows.Forms.Button();
-            this.btnEmployees = new System.Windows.Forms.Button();
+            this.btnAdminData = new System.Windows.Forms.Button();
+            this.btnSales = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
 
-            // btnProducts
-            this.btnProducts.Location = new System.Drawing.Point(50, 50);
-            this.btnProducts.Name = "btnProducts";
-            this.btnProducts.Size = new System.Drawing.Size(120, 40);
-            this.btnProducts.TabIndex = 0;
-            this.btnProducts.Text = "Productos";
-            this.btnProducts.UseVisualStyleBackColor = true;
-            this.btnProducts.Click += new System.EventHandler(this.btnProducts_Click);
+            // btnAdminData (Administración de Datos)
+            this.btnAdminData.Location = new System.Drawing.Point(50, 50);
+            this.btnAdminData.Name = "btnAdminData";
+            this.btnAdminData.Size = new System.Drawing.Size(120, 40);
+            this.btnAdminData.TabIndex = 0;
+            this.btnAdminData.Text = "Administración de Datos";
+            this.btnAdminData.UseVisualStyleBackColor = true;
+            this.btnAdminData.Click += new System.EventHandler(this.btnAdminData_Click);
 
-            // btnClients
-            this.btnClients.Location = new System.Drawing.Point(200, 50);
-            this.btnClients.Name = "btnClients";
-            this.btnClients.Size = new System.Drawing.Size(120, 40);
-            this.btnClients.TabIndex = 1;
-            this.btnClients.Text = "Clientes";
-            this.btnClients.UseVisualStyleBackColor = true;
-            this.btnClients.Click += new System.EventHandler(this.btnClients_Click);
+            // btnSales (Ventas)
+            this.btnSales.Location = new System.Drawing.Point(200, 50);
+            this.btnSales.Name = "btnSales";
+            this.btnSales.Size = new System.Drawing.Size(120, 40);
+            this.btnSales.TabIndex = 1;
+            this.btnSales.Text = "Ventas";
+            this.btnSales.UseVisualStyleBackColor = true;
+            this.btnSales.Click += new System.EventHandler(this.btnSales_Click);
 
-            // btnEmployees
-            this.btnEmployees.Location = new System.Drawing.Point(50, 120);
-            this.btnEmployees.Name = "btnEmployees";
-            this.btnEmployees.Size = new System.Drawing.Size(120, 40);
-            this.btnEmployees.TabIndex = 2;
-            this.btnEmployees.Text = "Empleados";
-            this.btnEmployees.UseVisualStyleBackColor = true;
-            this.btnEmployees.Click += new System.EventHandler(this.btnEmployees_Click);
-
-            // btnLogout
-            this.btnLogout.Location = new System.Drawing.Point(200, 120);
+            // btnLogout (Cerrar Sesión)
+            this.btnLogout.Location = new System.Drawing.Point(125, 120);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(120, 40);
-            this.btnLogout.TabIndex = 3;
+            this.btnLogout.TabIndex = 2;
             this.btnLogout.Text = "Cerrar Sesión";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
 
             // MainForm
-            this.ClientSize = new System.Drawing.Size(400, 250);
-            this.Controls.Add(this.btnProducts);
-            this.Controls.Add(this.btnClients);
-            this.Controls.Add(this.btnEmployees);
+            this.ClientSize = new System.Drawing.Size(400, 200);
+            this.Controls.Add(this.btnAdminData);
+            this.Controls.Add(this.btnSales);
             this.Controls.Add(this.btnLogout);
             this.Name = "MainForm";
             this.Text = "Menú Principal";
             this.ResumeLayout(false);
         }
 
-        private System.Windows.Forms.Button btnProducts;
-        private System.Windows.Forms.Button btnClients;
-        private System.Windows.Forms.Button btnEmployees;
-        private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Button btnAdminData; // Botón de Administración de Datos
+        private System.Windows.Forms.Button btnSales;     // Botón de Ventas
+        private System.Windows.Forms.Button btnLogout;   // Botón de Cerrar Sesión
+
     }
 }
