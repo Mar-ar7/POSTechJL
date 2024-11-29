@@ -5,10 +5,6 @@ namespace POSTechJL
 {
     public partial class VentasDataForm : Form
     {
-        public VentasDataForm()
-        {
-            InitializeComponent();
-        }
 
         private void InitializeComponent()
         {
@@ -48,21 +44,9 @@ namespace POSTechJL
 
         private System.Windows.Forms.Button btnSales;
         private System.Windows.Forms.Button btnBack;
-
-        // Evento de "Gestión de Ventas"
-        private void btnSales_Click(object sender, EventArgs e)
-        {
-            SalesForm salesForm = new SalesForm(); // Abre el formulario de ventas
-            salesForm.Show();
-            this.Hide();
-        }
-
-        // Evento de "Volver"
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            MainForm mainForm = new MainForm(); // Abre el formulario principal
-            mainForm.Show();
-            this.Hide();
-        }
     }
 }
+
+
+        // Evento de "Gestión de Ventas"
+        

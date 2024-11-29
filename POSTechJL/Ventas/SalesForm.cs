@@ -112,7 +112,7 @@ namespace POSTechJL
 
 
             // Si el cliente es 'CF', asignamos un ID especial o lo que sea necesario
-            int customerID = customerNIT.ToUpper() == "CF" ? 0 : GetCustomerIDByNIT(customerNIT);  // Suponemos que tienes un método que obtiene el cliente por NIT o nombre
+            int customerID = GetCustomerIDByNIT(customerNIT);  // Suponemos que tienes un método que obtiene el cliente por NIT o nombre
 
             // Registrar la venta
             using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -181,17 +181,10 @@ namespace POSTechJL
             {
                 connection.Open();
 
-                // Manejar caso especial de "CF" como Consumidor Final
-                if (customerNIT.ToUpper() == "CF")
-                {
-                    return 0; // Regresa 0 para el Consumidor Final
-                }
-
                 // Consulta para buscar el cliente por NIT o nombre completo
                 MySqlCommand command = new MySqlCommand(
-                    "SELECT CustomerID FROM Customers WHERE NIT = @NIT OR CONCAT(FirstName, ' ', LastName) = @FullName",
-                    connection
-                );
+                    "SELECT CustomerID FROM Customers WHERE NIT = @NIT OR CONCAT(FirstName, ' ', LastName) = @FullName", connection);
+                
                 command.Parameters.AddWithValue("@NIT", customerNIT);
                 command.Parameters.AddWithValue("@FullName", customerNIT);
 
