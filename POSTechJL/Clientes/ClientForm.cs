@@ -62,7 +62,7 @@ namespace POSTechJL
             LoadClients();
             ClearFields();
         }
-
+        //eliminar
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtClientID.Text)) return;
