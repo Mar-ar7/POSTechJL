@@ -2,7 +2,6 @@
 {
     partial class SalesForm
     {
-        
         #region Código generado por el Diseñador de Windows Forms
 
         private void InitializeComponent()
@@ -13,7 +12,9 @@
             this.lstCart = new System.Windows.Forms.ListBox();
             this.lblTotal = new System.Windows.Forms.Label();
             this.btnCheckout = new System.Windows.Forms.Button();
+            this.pictureBox = new System.Windows.Forms.PictureBox(); // Agregado para la imagen del producto
             ((System.ComponentModel.ISupportInitialize)(this.dgvProducts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // txtSearch
@@ -74,18 +75,29 @@
             this.btnCheckout.UseVisualStyleBackColor = true;
             this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
             // 
-            // MainForm
+            // pictureBox
             // 
-            this.ClientSize = new System.Drawing.Size(784, 361);
+            this.pictureBox.Location = new System.Drawing.Point(518, 340); // Ubicación del PictureBox
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(250, 150); // Tamaño del PictureBox
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage; // Ajustar imagen al tamaño
+            this.pictureBox.TabIndex = 6;
+            this.pictureBox.TabStop = false;
+            // 
+            // SalesForm
+            // 
+            this.ClientSize = new System.Drawing.Size(784, 511); // Aumentar el tamaño para acomodar el PictureBox
+            this.Controls.Add(this.pictureBox); // Agregar el PictureBox a los controles
             this.Controls.Add(this.btnCheckout);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.lstCart);
             this.Controls.Add(this.dgvProducts);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtSearch);
-            this.Name = "MainForm";
+            this.Name = "SalesForm";
             this.Text = "Punto de Venta";
             ((System.ComponentModel.ISupportInitialize)(this.dgvProducts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -98,5 +110,6 @@
         private System.Windows.Forms.ListBox lstCart;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnCheckout;
+        private System.Windows.Forms.PictureBox pictureBox; // Definido aquí para mostrar la imagen
     }
 }

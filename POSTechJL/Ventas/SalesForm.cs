@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;  // Necesario para manejar imágenes
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
-using System.Text;
-
 
 namespace POSTechJL
 {
@@ -20,13 +20,13 @@ namespace POSTechJL
             InitializeComponent();
         }
 
-        // Cargar productos desde la base de datos
+        // Cargar productos desde la base de datos, incluyendo la imagen
         private void LoadProducts(string searchTerm)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "SELECT ProductID, Code, Name, Price FROM Products WHERE Name LIKE @searchTerm OR Code LIKE @searchTerm";
+                string query = "SELECT ProductID, Code, Name, Price, ImagePath FROM Products WHERE Name LIKE @searchTerm OR Code LIKE @searchTerm";
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@searchTerm", "%" + searchTerm + "%");
 
@@ -44,7 +44,7 @@ namespace POSTechJL
             LoadProducts(searchTerm);
         }
 
-        // Agregar producto al carrito
+        // Agregar producto al carrito y mostrar la imagen en el PictureBox
         private void dgvProducts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -52,6 +52,17 @@ namespace POSTechJL
                 int productId = Convert.ToInt32(dgvProducts.Rows[e.RowIndex].Cells[0].Value);
                 string productName = dgvProducts.Rows[e.RowIndex].Cells[2].Value.ToString();
                 decimal unitPrice = Convert.ToDecimal(dgvProducts.Rows[e.RowIndex].Cells[3].Value);
+                string imagePath = dgvProducts.Rows[e.RowIndex].Cells[4].Value.ToString();
+
+                // Actualizar el PictureBox con la imagen del producto
+                if (!string.IsNullOrEmpty(imagePath) && System.IO.File.Exists(imagePath))
+                {
+                    pictureBox.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    pictureBox.Image = null; // Si no existe la imagen, dejamos el PictureBox vacío
+                }
 
                 CartItem product = new CartItem
                 {
@@ -100,8 +111,6 @@ namespace POSTechJL
             }
 
             // Solicitar NIT o nombre del cliente
-
-            // Solicitar NIT o nombre del cliente
             string customerNIT = Interaction.InputBox("Ingrese el NIT o nombre del cliente (o 'CF' para consumidor final):", "Facturación", "", -1, -1);
 
             if (string.IsNullOrWhiteSpace(customerNIT))
@@ -109,7 +118,6 @@ namespace POSTechJL
                 MessageBox.Show("Debe ingresar un NIT o nombre de cliente.");
                 return;
             }
-
 
             // Si el cliente es 'CF', asignamos un ID especial o lo que sea necesario
             int customerID = GetCustomerIDByNIT(customerNIT);  // Suponemos que tienes un método que obtiene el cliente por NIT o nombre
@@ -122,7 +130,7 @@ namespace POSTechJL
                     connection.Open();
 
                     // Insertar la venta (factura)
-                    MySqlCommand saleCommand = new MySqlCommand("INSERT INTO Sales (CustomerID, EmployeeID, Total, SaleDate) VALUES (@CustomerID, @EmployeeID, @Total, @SaleDate)",connection);
+                    MySqlCommand saleCommand = new MySqlCommand("INSERT INTO Sales (CustomerID, EmployeeID, Total, SaleDate) VALUES (@CustomerID, @EmployeeID, @Total, @SaleDate)", connection);
                     saleCommand.Parameters.AddWithValue("@CustomerID", customerID); // Debe ser válido
                     saleCommand.Parameters.AddWithValue("@EmployeeID", 1);
                     saleCommand.Parameters.AddWithValue("@Total", cart.Sum(item => item.Quantity * item.UnitPrice));
@@ -132,7 +140,6 @@ namespace POSTechJL
                     // Obtener el ID de la venta recién insertada
                     int saleID = (int)saleCommand.LastInsertedId;
 
-                    // Insertar los detalles de la venta
                     // Insertar los detalles de la venta
                     foreach (CartItem item in cart)
                     {
@@ -156,7 +163,6 @@ namespace POSTechJL
                         updateInventoryCommand.Parameters.AddWithValue("@ProductID", item.ProductID);
                         updateInventoryCommand.ExecuteNonQuery();
                     }
-
 
                     MessageBox.Show("Venta registrada exitosamente.");
 
@@ -184,7 +190,7 @@ namespace POSTechJL
                 // Consulta para buscar el cliente por NIT o nombre completo
                 MySqlCommand command = new MySqlCommand(
                     "SELECT CustomerID FROM Customers WHERE NIT = @NIT OR CONCAT(FirstName, ' ', LastName) = @FullName", connection);
-                
+
                 command.Parameters.AddWithValue("@NIT", customerNIT);
                 command.Parameters.AddWithValue("@FullName", customerNIT);
 
@@ -209,7 +215,6 @@ namespace POSTechJL
             }
         }
 
-
         // Método para mostrar el resumen de la venta
         private void ShowSaleSummary(int saleID, string customerNIT)
         {
@@ -227,14 +232,13 @@ namespace POSTechJL
                 // Usamos un StringBuilder para construir la factura
                 StringBuilder saleDetails = new StringBuilder();
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
-                saleDetails.AppendLine("                        FACTURA");
+                saleDetails.AppendLine("                                 FACTURA");
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
-                saleDetails.AppendLine($"                         N° {saleID}");
-                saleDetails.AppendLine($"  Fecha: {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}");
-                saleDetails.AppendLine("-------------------------------------------------------------------------");
+                saleDetails.AppendLine($"Factura N°: {saleID}");
+                saleDetails.AppendLine($"Fecha: {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}");
                 saleDetails.AppendLine($"Cliente: {customerNIT}");
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
-                saleDetails.AppendLine("Descripción                 Cantidad    Precio    Total");
+                saleDetails.AppendLine("DETALLES:");
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
 
                 decimal total = 0;
@@ -246,16 +250,19 @@ namespace POSTechJL
                     decimal unitPrice = reader.GetDecimal(2);
                     decimal itemTotal = quantity * unitPrice;
 
-                    // Aseguramos que la descripción, cantidad, precio y total tengan un formato alineado
-                    saleDetails.AppendLine($"{productName,-25} {quantity,8}    ${unitPrice,7:F2}    ${itemTotal,7:F2}");
+                    // Detalles verticales
+                    saleDetails.AppendLine($"Producto: {productName}");
+                    saleDetails.AppendLine($"Cantidad: {quantity}");
+                    saleDetails.AppendLine($"Precio Unitario: ${unitPrice:F2}");
+                    saleDetails.AppendLine($"Total: ${itemTotal:F2}");
+                    saleDetails.AppendLine("-------------------------------------------------------------------------");
                     total += itemTotal;
                 }
 
+                saleDetails.AppendLine($"Subtotal: ${total:F2}");
+                saleDetails.AppendLine($"Total: ${total:F2}");
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
-                saleDetails.AppendLine($"                                 Subtotal:  ${total:F2}");
-                saleDetails.AppendLine($"                                 Total:     ${total:F2}");
-                saleDetails.AppendLine("-------------------------------------------------------------------------");
-                saleDetails.AppendLine("                   ¡Gracias por su compra!");
+                saleDetails.AppendLine("                     ¡Gracias por su compra!");
                 saleDetails.AppendLine("-------------------------------------------------------------------------");
 
                 // Crear una instancia del formulario InvoiceForm
@@ -264,15 +271,15 @@ namespace POSTechJL
                 invoiceForm.ShowDialog(); // Mostrar el formulario con la factura
             }
         }
-        
-    }
-        }
+
+
         // Clase para representar los productos en el carrito
         public class CartItem
-    {
-        public int ProductID { get; set; }
-        public string ProductName { get; set; }
-        public decimal UnitPrice { get; set; }
-        public int Quantity { get; set; }
+        {
+            public int ProductID { get; set; }
+            public string ProductName { get; set; }
+            public decimal UnitPrice { get; set; }
+            public int Quantity { get; set; }
+        }
     }
-
+}

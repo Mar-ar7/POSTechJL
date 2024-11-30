@@ -23,20 +23,22 @@ namespace POSTechJL
                 Description = txtDescription.Text,
                 // Intentar convertir Price a decimal de forma segura
                 Price = decimal.TryParse(txtPrice.Text, out decimal price) ? price : 0m, // Si no es válido, se asigna 0
-                                                                                         // Intentar convertir Stock a int de forma segura
+                // Intentar convertir Stock a int de forma segura
                 Stock = int.TryParse(txtStock.Text, out int stock) ? stock : 0, // Si no es válido, se asigna 0
                 ImagePath = txtImagePath.Text
             };
 
+            // Validación para asegurarse de que los campos de precio y stock no estén vacíos
             if (string.IsNullOrWhiteSpace(txtPrice.Text) || string.IsNullOrWhiteSpace(txtStock.Text))
             {
                 MessageBox.Show("Por favor, ingrese valores válidos en los campos de precio y stock.");
                 return; // Detener la ejecución si los campos están vacíos
             }
 
-            ProductLogic.AddProduct(product); // Llamada a la lógica de agregar
-            LoadProducts();
-            ClearFields();
+            // Llamada a la lógica de agregar
+            ProductLogic.AddProduct(product);
+            LoadProducts(); // Recargar la lista de productos
+            ClearFields(); // Limpiar los campos del formulario
         }
 
         // Método para manejar el botón de actualizar producto
@@ -54,9 +56,10 @@ namespace POSTechJL
                 ImagePath = txtImagePath.Text
             };
 
-            ProductLogic.UpdateProduct(product);  // Llamada a la lógica de actualización
-            LoadProducts();
-            ClearFields();
+            // Llamada a la lógica de actualización
+            ProductLogic.UpdateProduct(product);
+            LoadProducts(); // Recargar la lista de productos
+            ClearFields(); // Limpiar los campos del formulario
         }
 
         // Método para manejar el botón de eliminar producto
@@ -65,8 +68,8 @@ namespace POSTechJL
             // Declaración explícita de productId como un entero
             int productId = int.Parse(txtProductID.Text);  // Asume que el ID del producto se selecciona en el formulario
             ProductLogic.DeleteProduct(productId);  // Llamada a la lógica de eliminación
-            LoadProducts();
-            ClearFields();
+            LoadProducts(); // Recargar la lista de productos
+            ClearFields(); // Limpiar los campos del formulario
         }
 
         // Método para cargar productos en el DataGridView
@@ -115,11 +118,22 @@ namespace POSTechJL
             }
         }
 
-        // Método para seleccionar la imagen
+        // Método para seleccionar la imagen desde una carpeta 'Images' dentro del proyecto
         private void btnSelectImage_Click(object sender, EventArgs e)
         {
+            // Ruta relativa para la carpeta 'Images' dentro del proyecto
+            string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+            // Verificar si la carpeta 'Images' existe
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath); // Crear la carpeta 'Images' si no existe
+            }
+
+            // Mostrar un cuadro de diálogo para seleccionar la imagen
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
+                InitialDirectory = directoryPath, // Ruta inicial del cuadro de diálogo
                 Filter = "Imágenes (*.jpg; *.jpeg; *.png; *.gif)|*.jpg;*.jpeg;*.png;*.gif|Todos los archivos (*.*)|*.*",
                 Title = "Selecciona una imagen"
             };
@@ -128,24 +142,19 @@ namespace POSTechJL
             {
                 string selectedImagePath = openFileDialog.FileName;
 
-                // Ruta relativa para la carpeta 'image' dentro del proyecto
-                string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
-
-                // Verificar si la carpeta 'image' existe, si no, crearla
-                if (!Directory.Exists(directoryPath))
-                {
-                    Directory.CreateDirectory(directoryPath);
-                }
-
                 // Obtener solo el nombre del archivo de la imagen seleccionada
                 string fileName = Path.GetFileName(selectedImagePath);
                 string targetPath = Path.Combine(directoryPath, fileName);
 
-                // Copiar la imagen seleccionada a la carpeta 'image' en el repositorio
                 try
                 {
-                    File.Copy(selectedImagePath, targetPath, true); // true para sobrescribir si ya existe
-                                                                    // Actualizar el TextBox con la ruta de la imagen
+                    // Si el archivo no existe, lo copiamos a la carpeta 'Images'
+                    if (!File.Exists(targetPath))
+                    {
+                        File.Copy(selectedImagePath, targetPath);
+                    }
+
+                    // Actualizar el TextBox con la ruta de la imagen
                     txtImagePath.Text = targetPath;
 
                     // Mostrar la imagen en el PictureBox
@@ -159,25 +168,28 @@ namespace POSTechJL
                 }
             }
         }
+
         // Al cargar el formulario, cargamos los productos
         private void ProductForm_Load(object sender, EventArgs e)
         {
-            LoadProducts();
+            LoadProducts(); // Llamada al método para cargar los productos
+        }
+
+        // Métodos para validar cambios en los campos de precio y stock
+        private void txtPrice_TextChanged(object sender, EventArgs e)
+        {
+            if (!decimal.TryParse(txtPrice.Text, out _))  // Si el precio no es válido
+            {
+         
+            }
         }
 
         private void txtStock_TextChanged(object sender, EventArgs e)
         {
-
-        }
-
-        private void txtPrice_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dgvProducts_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
+           
+            {
+           
+            }
         }
     }
 }
