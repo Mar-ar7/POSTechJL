@@ -43,7 +43,7 @@ namespace POSTechJL
             return clients;
         }
 
-        // Agregar cliente
+        // Agregar a un nuevo cliente
         public static void AddClient(Client client)
         {
             string query = "INSERT INTO Customers (NIT, FirstName, LastName, Address, Phone) VALUES (@NIT, @FirstName, @LastName, @Address, @Phone)";
@@ -63,7 +63,7 @@ namespace POSTechJL
             }
         }
 
-        // Actualizar cliente
+        // Actualizar la informacion de un cliente
         public static void UpdateClient(Client client)
         {
             string query = "UPDATE Customers SET NIT = @NIT, FirstName = @FirstName, LastName = @LastName, Address = @Address, Phone = @Phone WHERE CustomerID = @CustomerID";
@@ -84,7 +84,7 @@ namespace POSTechJL
             }
         }
 
-        // Eliminar cliente
+        // Eliminar a un cliente
         public static void DeleteClient(int clientId)
         {
             string query = "DELETE FROM Customers WHERE CustomerID = @CustomerID";
